@@ -1,6 +1,7 @@
 import React from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import { GoogleLogin } from 'react-google-login';
 
 import { authenticationService } from '@/_services';
 
@@ -15,6 +16,25 @@ class LoginPage extends React.Component {
     }
 
     render() {
+        const responseGoogleSuccess = (response) => {
+            console.log(response);
+            authenticationService.socialLogin(response)
+                .then(
+                    user => {
+                        const { from } = this.props.location.state || { from: { pathname: "/" } };
+                        this.props.history.push(from);
+                    },
+                    error => {
+                        setSubmitting(false);
+                        setStatus(error);
+                    }
+                );
+        }
+
+        const responseGoogleFailure = (response) => {
+            console.log(response);
+        }
+
         return (
             <div>
                 <div className="alert alert-info">
@@ -24,16 +44,16 @@ class LoginPage extends React.Component {
                 <h2>Login</h2>
                 <Formik
                     initialValues={{
-                        username: '',
+                        email: '',
                         password: ''
                     }}
                     validationSchema={Yup.object().shape({
-                        username: Yup.string().required('Username is required'),
+                        email: Yup.string().required('Username is required'),
                         password: Yup.string().required('Password is required')
                     })}
-                    onSubmit={({ username, password }, { setStatus, setSubmitting }) => {
+                    onSubmit={({ email, password }, { setStatus, setSubmitting }) => {
                         setStatus();
-                        authenticationService.login(username, password)
+                        authenticationService.login(email, password)
                             .then(
                                 user => {
                                     const { from } = this.props.location.state || { from: { pathname: "/" } };
@@ -48,9 +68,9 @@ class LoginPage extends React.Component {
                     render={({ errors, status, touched, isSubmitting }) => (
                         <Form>
                             <div className="form-group">
-                                <label htmlFor="username">Username</label>
-                                <Field name="username" type="text" className={'form-control' + (errors.username && touched.username ? ' is-invalid' : '')} />
-                                <ErrorMessage name="username" component="div" className="invalid-feedback" />
+                                <label htmlFor="email">Email</label>
+                                <Field name="email" type="text" className={'form-control' + (errors.email && touched.email ? ' is-invalid' : '')} />
+                                <ErrorMessage name="email" component="div" className="invalid-feedback" />
                             </div>
                             <div className="form-group">
                                 <label htmlFor="password">Password</label>
@@ -68,6 +88,13 @@ class LoginPage extends React.Component {
                             }
                         </Form>
                     )}
+                />
+                <GoogleLogin
+                    clientId={'60179546773-31mltb76aqu8kqouffdoqev56cbrfujm.apps.googleusercontent.com'}
+                    buttonText="Log in with Google"
+                    cookiePolicy={'single_host_origin'}
+                    onSuccess={responseGoogleSuccess}
+                    onFailure={responseGoogleFailure}
                 />
             </div>
         )

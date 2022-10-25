@@ -7,6 +7,7 @@ import { PrivateRoute } from '@/_components';
 import { HomePage } from '@/HomePage';
 import { AdminPage } from '@/AdminPage';
 import { LoginPage } from '@/LoginPage';
+import { StudentPage } from '@/StudentPage';
 
 class App extends React.Component {
     constructor(props) {
@@ -39,6 +40,7 @@ class App extends React.Component {
                         <nav className="navbar navbar-expand navbar-dark bg-dark">
                             <div className="navbar-nav">
                                 <Link to="/" className="nav-item nav-link">Home</Link>
+                                {currentUser && <Link to="/students" className="nav-item nav-link">Student</Link>}
                                 {isAdmin && <Link to="/admin" className="nav-item nav-link">Admin</Link>}
                                 <a onClick={this.logout} className="nav-item nav-link">Logout</a>
                             </div>
@@ -49,6 +51,7 @@ class App extends React.Component {
                             <div className="row">
                                 <div className="col-md-6 offset-md-3">
                                     <PrivateRoute exact path="/" component={HomePage} />
+                                    <PrivateRoute exact path="/students" component={StudentPage} />
                                     <PrivateRoute path="/admin" roles={[Role.Admin]} component={AdminPage} />
                                     <Route path="/login" component={LoginPage} />
                                 </div>

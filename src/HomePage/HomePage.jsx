@@ -1,6 +1,8 @@
 import React from 'react';
 
-import { userService, authenticationService } from '@/_services';
+import { authenticationService } from '@/_services';
+import { userService } from "../_services";
+import {studentService} from "../_services/student.service";
 
 class HomePage extends React.Component {
     constructor(props) {
@@ -14,7 +16,7 @@ class HomePage extends React.Component {
 
     componentDidMount() {
         const { currentUser } = this.state;
-        userService.getById(currentUser.id).then(userFromApi => this.setState({ userFromApi }));
+        //studentService.getById(1).then(userFromApi => this.setState({ userFromApi }));
     }
 
     render() {
@@ -23,13 +25,12 @@ class HomePage extends React.Component {
             <div>
                 <h1>Home</h1>
                 <p>You're logged in with React & JWT!!</p>
-                <p>Your role is: <strong>{currentUser.role}</strong>.</p>
                 <p>This page can be accessed by all authenticated users.</p>
                 <div>
                     Current user from secure api end point:
-                    {userFromApi &&
+                    {currentUser &&
                         <ul>
-                            <li>{userFromApi.firstName} {userFromApi.lastName}</li>
+                            <li>{currentUser.user.name}</li>
                         </ul>
                     }
                 </div>

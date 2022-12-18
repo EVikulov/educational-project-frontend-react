@@ -3,13 +3,12 @@ require("@babel/register")({
 });
 
 const router = require("./sitemap-routes").default;
-console.log(router);
 const Sitemap = require("react-router-sitemap").default;
 
 function generateSitemap() {
     return (
         new Sitemap(router)
-            .build("https://www.example.com")
+            .build("http://localhost:8080")
             .save("./sitemap.xml")
     );
 }
